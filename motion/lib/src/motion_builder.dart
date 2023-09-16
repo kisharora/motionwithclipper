@@ -148,18 +148,21 @@ class _MotionStreamBuilderState extends State<MotionStreamBuilder> {
                   top: -verticalShadowOffset + widget.shadow!.topOffset,
                   bottom: verticalShadowOffset - widget.shadow!.topOffset,
                   child: IgnorePointer(
-                      child: ClipPath(
-                    clipper: widget.clipper,
-                    child: Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            borderRadius: widget.borderRadius,
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: widget.shadow!.blurRadius,
-                                  color: widget.shadow!.color
-                                      .withOpacity(widget.shadow!.opacity))
-                            ])),
+                      child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: ClipPath(
+                      clipper: widget.clipper,
+                      child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              borderRadius: widget.borderRadius,
+                              boxShadow: [
+                                BoxShadow(
+                                    blurRadius: widget.shadow!.blurRadius,
+                                    color: widget.shadow!.color
+                                        .withOpacity(widget.shadow!.opacity))
+                              ])),
+                    ),
                   ))),
 
             // The transformation widgets
@@ -171,31 +174,31 @@ class _MotionStreamBuilderState extends State<MotionStreamBuilder> {
                         Motion.instance.isGradientOverlayAvailable
                     ? Stack(clipBehavior: Clip.none, children: [
                         widget.child,
-                        ClipPath(
+                        Positioned.fill(
+                            child: ClipPath(
                           clipper: widget.clipper,
-                          child: Positioned.fill(
-                              child: IgnorePointer(
-                                  child: Container(
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                        borderRadius: widget.borderRadius,
-                                        gradient: LinearGradient(
-                                            colors: [
-                                              (widget.glare?.color ??
-                                                      defaultGlareColor)
-                                                  .withOpacity(widget
-                                                          .glare?.minOpacity ??
+                          child: IgnorePointer(
+                              child: Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                    borderRadius: widget.borderRadius,
+                                    gradient: LinearGradient(
+                                        colors: [
+                                          (widget.glare?.color ??
+                                                  defaultGlareColor)
+                                              .withOpacity(
+                                                  widget.glare?.minOpacity ??
                                                       minGlareOpacity),
-                                              (widget.glare?.color ??
-                                                      defaultGlareColor)
-                                                  .withOpacity(widget
-                                                          .glare?.maxOpacity ??
+                                          (widget.glare?.color ??
+                                                  defaultGlareColor)
+                                              .withOpacity(
+                                                  widget.glare?.maxOpacity ??
                                                       maxGlareOpacity)
-                                            ],
-                                            transform: GradientRotation(
-                                                glareRotation)),
-                                      )))),
-                        )
+                                        ],
+                                        transform:
+                                            GradientRotation(glareRotation)),
+                                  ))),
+                        ))
                       ])
                     : widget.child),
           ]));
