@@ -70,6 +70,7 @@ class _MotionDemoPageState extends State<MotionDemoPage> {
         Motion.elevated(
           elevation: 70,
           borderRadius: cardBorderRadius,
+          clipper: null,
           child: const Card(
               width: 280, height: 170, borderRadius: cardBorderRadius),
         ),

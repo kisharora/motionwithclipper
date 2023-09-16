@@ -43,6 +43,7 @@ class Motion extends StatefulWidget {
   ///
   /// Note: it is internally enforced to [null] if the platform is Safari Mobile.
   final FilterQuality? filterQuality;
+  final CustomClipper<Path>? clipper;
 
   /// Creates a [Motion] widget with the given [child] and [controller], applying all of the default effects.
   ///
@@ -62,6 +63,7 @@ class Motion extends StatefulWidget {
     this.translation = const TranslationConfiguration(),
     this.borderRadius,
     this.filterQuality = defaultFilterQuality,
+    this.clipper,
   }) : super(key: key);
 
   /// Creates a [Motion] widget with the given [child] and [controller], but only applying the rotation effect by default.
@@ -76,6 +78,7 @@ class Motion extends StatefulWidget {
     this.translation,
     this.borderRadius,
     this.filterQuality = defaultFilterQuality,
+    this.clipper,
   }) : super(key: key);
 
   /// Creates a [Motion] widget by setting configurations according to the elevation of the widget.
@@ -88,17 +91,17 @@ class Motion extends StatefulWidget {
   ///   - Increase the distance by which the widget will be translated on the X and Y axises
   ///
   /// [elevation] may range from 0 to 100, allowing you to easily stay consistent accross your design.
-  factory Motion.elevated({
-    Key? key,
-    required int elevation,
-    required Widget child,
-    MotionController? controller,
-    BorderRadius? borderRadius,
-    bool glare = true,
-    bool shadow = true,
-    bool translation = true,
-    FilterQuality? filterQuality = defaultFilterQuality,
-  }) =>
+  factory Motion.elevated(
+          {Key? key,
+          required int elevation,
+          required Widget child,
+          MotionController? controller,
+          BorderRadius? borderRadius,
+          bool glare = true,
+          bool shadow = true,
+          bool translation = true,
+          FilterQuality? filterQuality = defaultFilterQuality,
+          required CustomClipper<Path>? clipper}) =>
       Motion(
         key: key,
         child: child,
@@ -110,6 +113,7 @@ class Motion extends StatefulWidget {
             : null,
         borderRadius: borderRadius,
         filterQuality: filterQuality,
+        clipper: clipper,
       );
 
   @override
@@ -127,5 +131,6 @@ class _MotionState extends State<Motion> {
         translation: widget.translation,
         borderRadius: widget.borderRadius,
         filterQuality: widget.filterQuality,
+        clipper: widget.clipper,
       ));
 }

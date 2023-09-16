@@ -32,6 +32,7 @@ class MotionStreamBuilder extends StatefulWidget {
   ///
   /// Defaults to [defaultFilterQuality] when omitted in the constructor.
   final FilterQuality? filterQuality;
+  final CustomClipper<Path>? clipper;
 
   /// Creates a [Motion] widget with the given [child] and [controller], applying all of the effects.
   const MotionStreamBuilder({
@@ -43,6 +44,7 @@ class MotionStreamBuilder extends StatefulWidget {
     required this.translation,
     this.borderRadius,
     this.filterQuality = defaultFilterQuality,
+    this.clipper,
   }) : super(key: key);
 
   @override
@@ -146,49 +148,55 @@ class _MotionStreamBuilderState extends State<MotionStreamBuilder> {
                   top: -verticalShadowOffset + widget.shadow!.topOffset,
                   bottom: verticalShadowOffset - widget.shadow!.topOffset,
                   child: IgnorePointer(
-                      child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              borderRadius: widget.borderRadius,
-                              boxShadow: [
-                                BoxShadow(
-                                    blurRadius: widget.shadow!.blurRadius,
-                                    color: widget.shadow!.color
-                                        .withOpacity(widget.shadow!.opacity))
-                              ])))),
+                      child: ClipPath(
+                    clipper: widget.clipper,
+                    child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            borderRadius: widget.borderRadius,
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: widget.shadow!.blurRadius,
+                                  color: widget.shadow!.color
+                                      .withOpacity(widget.shadow!.opacity))
+                            ])),
+                  ))),
 
             // The transformation widgets
-            Transform(
-                transform: computeTransformForEvent(snapshot.data),
-                alignment: FractionalOffset.center,
-                filterQuality: filterQuality,
-                child: widget.glare != null &&
-                        Motion.instance.isGradientOverlayAvailable
-                    ? Stack(clipBehavior: Clip.none, children: [
-                        widget.child,
-                        Positioned.fill(
-                            child: IgnorePointer(
-                                child: Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      borderRadius: widget.borderRadius,
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            (widget.glare?.color ??
-                                                    defaultGlareColor)
-                                                .withOpacity(
-                                                    widget.glare?.minOpacity ??
-                                                        minGlareOpacity),
-                                            (widget.glare?.color ??
-                                                    defaultGlareColor)
-                                                .withOpacity(
-                                                    widget.glare?.maxOpacity ??
-                                                        maxGlareOpacity)
-                                          ],
-                                          transform:
-                                              GradientRotation(glareRotation)),
-                                    ))))
-                      ])
-                    : widget.child),
+            ClipPath(
+              clipper: widget.clipper,
+              child: Transform(
+                  transform: computeTransformForEvent(snapshot.data),
+                  alignment: FractionalOffset.center,
+                  filterQuality: filterQuality,
+                  child: widget.glare != null &&
+                          Motion.instance.isGradientOverlayAvailable
+                      ? Stack(clipBehavior: Clip.none, children: [
+                          widget.child,
+                          Positioned.fill(
+                              child: IgnorePointer(
+                                  child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        borderRadius: widget.borderRadius,
+                                        gradient: LinearGradient(
+                                            colors: [
+                                              (widget.glare?.color ??
+                                                      defaultGlareColor)
+                                                  .withOpacity(widget
+                                                          .glare?.minOpacity ??
+                                                      minGlareOpacity),
+                                              (widget.glare?.color ??
+                                                      defaultGlareColor)
+                                                  .withOpacity(widget
+                                                          .glare?.maxOpacity ??
+                                                      maxGlareOpacity)
+                                            ],
+                                            transform: GradientRotation(
+                                                glareRotation)),
+                                      ))))
+                        ])
+                      : widget.child),
+            ),
           ]));
 }
