@@ -163,17 +163,17 @@ class _MotionStreamBuilderState extends State<MotionStreamBuilder> {
                   ))),
 
             // The transformation widgets
-            ClipPath(
-              clipper: widget.clipper,
-              child: Transform(
-                  transform: computeTransformForEvent(snapshot.data),
-                  alignment: FractionalOffset.center,
-                  filterQuality: filterQuality,
-                  child: widget.glare != null &&
-                          Motion.instance.isGradientOverlayAvailable
-                      ? Stack(clipBehavior: Clip.none, children: [
-                          widget.child,
-                          Positioned.fill(
+            Transform(
+                transform: computeTransformForEvent(snapshot.data),
+                alignment: FractionalOffset.center,
+                filterQuality: filterQuality,
+                child: widget.glare != null &&
+                        Motion.instance.isGradientOverlayAvailable
+                    ? Stack(clipBehavior: Clip.none, children: [
+                        widget.child,
+                        ClipPath(
+                          clipper: widget.clipper,
+                          child: Positioned.fill(
                               child: IgnorePointer(
                                   child: Container(
                                       clipBehavior: Clip.hardEdge,
@@ -194,9 +194,9 @@ class _MotionStreamBuilderState extends State<MotionStreamBuilder> {
                                             ],
                                             transform: GradientRotation(
                                                 glareRotation)),
-                                      ))))
-                        ])
-                      : widget.child),
-            ),
+                                      )))),
+                        )
+                      ])
+                    : widget.child),
           ]));
 }
